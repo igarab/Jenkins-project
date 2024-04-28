@@ -3,16 +3,30 @@ plugins {
   id 'org.springframework.boot' version '3.1.0'
   id 'io.spring.dependency-management' version '1.1.0'
   id 'org.graalvm.buildtools.native' version '0.9.22'
+  id 'jacoco'
 }
 
 apply plugin: 'java'
+
+repositories {
+  mavenCentral()
+}
 
 group = 'org.springframework.samples'
 version = '3.1.0'
 sourceCompatibility = '17'
 
-repositories {
-  mavenCentral()
+// Configure test tasks to generate JaCoCo coverage reports
+test {
+    jacoco {
+        // Enable JaCoCo for tests
+        enabled = true
+    }
+    finalizedBy jacocoTestReport
+}
+
+jacocoTestReport {
+    dependsOn test // tests are required to run before generating the report
 }
 
 ext.webjarsFontawesomeVersion = "4.7.0"
@@ -43,3 +57,6 @@ dependencies {
 tasks.named('test') {
   useJUnitPlatform()
 }
+
+// Make Jacoco report task part of the build process
+//check.dependsOn jacocoReport
